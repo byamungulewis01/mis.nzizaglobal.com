@@ -1,7 +1,6 @@
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
-const morgan = require('morgan');
 const path = require('path');
 const { errorHandler } = require('./middlewares/errorHandler');
 const routes = require('./routes');
@@ -15,7 +14,12 @@ app.use(helmet({
 }));
 app.use(cors(corsOptions));
 app.use(express.json());
-app.use(morgan('dev'));
+
+// Use Morgan only in development
+if (process.env.NODE_ENV === 'development') {
+    const morgan = require('morgan');
+    app.use(morgan('dev'));
+}
 
 // Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
